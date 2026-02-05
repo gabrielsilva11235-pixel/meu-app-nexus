@@ -1,0 +1,5 @@
+{
+  "name": "NexusDeck - Crediário",
+  "description": "A high-fidelity recreation of the Steam Deck and Steam Big Picture interface using React and Tailwind CSS, featuring smooth transitions and console-style navigation.",
+  "requestFramePermissions": []
+}
