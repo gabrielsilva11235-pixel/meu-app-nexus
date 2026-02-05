@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { NavTab } from './types';
 import HomeView from './components/HomeView';
@@ -77,11 +78,22 @@ const App: React.FC = () => {
 
   const [dynamicAppItems, setDynamicAppItems] = useState<AppItem[]>(() => {
     const saved = localStorage.getItem('nexus_app_items');
+    // IDs que devem ter capas fixas e não podem ser alteradas pelo cache antigo ou edição manual
+    const fixedIds = [
+      'auditoria_qualidade', 'aba_da_qualidade', 'faq_cliente_americanas', 
+      'regra_americanas', 'links_importantes', 'mural', 
+      'manual_colaborador', 'regra_restricao', 'visa_routines_teresina', 
+      'meta_janeiro_2026', 'horario_pausa', 'enderecos', 'sugestoes', 
+      'divergencias', 'limite_limite_vencer', 'limite_vencido_prejuizo', 
+      'dicas_sucesso', 'encargos_tarifas', 'consolidado_geral'
+    ];
+
     if (saved) {
       try {
         const savedItems = JSON.parse(saved);
         if (Array.isArray(savedItems)) {
           return APP_ITEMS.map(baseItem => {
+            if (fixedIds.includes(baseItem.id)) return baseItem; // Prioriza sempre o fixo da constante
             const savedItem = savedItems.find((si: any) => si.id === baseItem.id);
             return savedItem ? { ...baseItem, image: savedItem.image } : baseItem;
           });
@@ -237,7 +249,6 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (selectedGameId) {
-      // Mapeamento de IDs da APP_ITEMS em constants.ts para seus respectivos componentes
       if (selectedGameId === 'horario_pausa') return <HorarioPausaView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'manual_colaborador') return <ManualColaboradorView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'meta_janeiro_2026') return <MetaJanuary2026View onBack={() => setSelectedGameId(null)} />;
@@ -247,30 +258,26 @@ const App: React.FC = () => {
       if (selectedGameId === 'links_importantes') return <LinksImportantesView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'mural') return <MuralView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'consolidado_geral') return <ConsolidadoGeralView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'indicadores_qualidade') return <QualityMetricsView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'manual_scripts_qualidade') return <QualityManualView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'que_e_brasilcard') return <QueEBrasilCardView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'aba_da_qualidade') return <QualityDashboardView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'americanas') return <AmericanasView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'avalie_tma') return <AvalieTmaView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'funcionalidades_app') return <FuncionalidadesAppView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'sobre_faturas') return <SobreFaturasView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'dicas_sucesso') return <DicasSucessoView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'scripts') return <ScriptsView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'faq_cliente_americanas') return <FaqClienteAmericanasView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'regra_restricao') return <RegraRestricaoView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'regra_rs') return <RegraRSView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'limite_vencido_prejuizo') return <LimiteVencidoPrejuizoView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'visa_routines_teresina') return <VisaRoutinesTeresinaView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'divergencias') return <DivergenciasView onBack={() => setSelectedGameId(null)} />;
+      if (selectedGameId === 'pausas') return <PausasView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'enderecos') return <EnderecosView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'sugestoes') return <SugestoesView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'encargos_tarifas') return <EncargosTarifasView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'funcionalidades_app') return <FuncionalidadesAppView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'sobre_faturas') return <SobreFaturasView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'dicas_sucesso') return <DicasSucessoView onBack={() => setSelectedGameId(null)} />;
-
-      // Fallbacks para IDs legados ou variações
-      if (selectedGameId === 'americanas') return <AmericanasView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'avalie_tma') return <AvalieTmaView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'scripts') return <ScriptsView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'pausas') return <PausasView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'endereco') return <EnderecoView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'limite_vencer') return <LimiteVencerView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'indicadores_qualidade') return <QualityMetricsView onBack={() => setSelectedGameId(null)} />;
-      if (selectedGameId === 'manual_scripts_qualidade') return <QualityManualView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'termos_uso') return <TermosUsoView onBack={() => setSelectedGameId(null)} />;
       if (selectedGameId === 'termos_uso_conta') return <TermosUsoContaView onBack={() => setSelectedGameId(null)} />;
     }
